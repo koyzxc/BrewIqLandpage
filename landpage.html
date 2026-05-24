@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrewIQ | Smart POS & Analytics for Coffee Shops</title>
+  <meta name="description" content="BrewIQ is a smart POS and analytics platform for coffee shops. Manage orders, inventory, sales, and business insights in one simple system." />
+
+  <style>
+    :root {
+      --dark: #1f130d;
+      --brown: #3a2418;
+      --coffee: #8b4e24;
+      --gold: #d59b55;
+      --cream: #fff6ea;
+      --soft: #f8efe3;
+      --white: #ffffff;
+      --muted: #6f5a4a;
+      --border: #ead9c4;
+      --shadow: 0 20px 50px rgba(31, 19, 13, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 246, 234, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-content {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 24px;
+      color: var(--dark);
+      letter-spacing: -0.8px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--coffee), var(--gold));
+      box-shadow: 0 10px 25px rgba(139, 78, 36, 0.28);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--coffee);
+    }
+
+    .nav-cta {
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: var(--dark);
+      color: var(--white) !important;
+      box-shadow: 0 10px 25px rgba(31, 19, 13, 0.18);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 92px 0 70px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -180px -120px auto auto;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(213, 155, 85, 0.35), transparent 68%);
+      z-index: -1;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--coffee);
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 20px rgba(31, 19, 13, 0.06);
+    }
+
+    .hero h1 {
+      font-size: clamp(44px, 6vw, 72px);
+      line-height: 1.02;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      color: var(--coffee);
+    }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 19px;
+      max-width: 620px;
+      margin-bottom: 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 24px;
+      border-radius: 14px;
+      font-weight: 900;
+      transition: 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--coffee), var(--gold));
+      color: white;
+      box-shadow: 0 18px 35px rgba(139, 78, 36, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 45px rgba(139, 78, 36, 0.32);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--dark);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold);
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .trust-row span::before {
+      content: "✓";
+      color: var(--coffee);
+      font-weight: 900;
+      margin-right: 8px;
+    }
+
+    /* DASHBOARD MOCKUP */
+    .mockup-wrap {
+      position: relative;
+    }
+
+    .mockup-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transform: rotate(1deg);
+    }
+
+    .mockup-screen {
+      background: #24150e;
+      border-radius: 24px;
+      padding: 24px;
+      color: white;
+      min-height: 470px;
+      overflow: hidden;
+    }
+
+    .mockup-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    .screen-title {
+      color: #f7d7a8;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .metric-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 18px;
+      border-radius: 18px;
+    }
+
+    .metric-box small {
+      color: #cbb39e;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .metric-box strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .insight-card {
+      margin-top: 18px;
+      background: linear-gradient(135deg, rgba(213, 155, 85, 0.25), rgba(255,255,255,0.06));
+      border: 1px solid rgba(213, 155, 85, 0.25);
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .insight-card h3 {
+      color: #ffd99c;
+      margin-bottom: 8px;
+    }
+
+    .bar-group {
+      margin-top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #ddcbb9;
+      margin-bottom: 6px;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), #fff0c8);
+    }
+
+    .floating-card {
+      position: absolute;
+      left: -28px;
+      bottom: 35px;
+      width: 220px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(31, 19, 13, 0.18);
+    }
+
+    .floating-card strong {
+      display: block;
+      color: var(--coffee);
+      font-size: 22px;
+    }
+
+    .floating-card span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 82px 0;
+    }
+
+    .section-heading {
+      max-width: 760px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--coffee);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      margin-bottom: 10px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .feature-card,
+    .problem-card,
+    .benefit-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 12px 35px rgba(31, 19, 13, 0.06);
+      transition: 0.25s ease;
+    }
+
+    .feature-card:hover,
+    .problem-card:hover,
+    .benefit-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    .feature-card h3,
+    .problem-card h3,
+    .benefit-card h3 {
+      font-size: 21px;
+      margin-bottom: 10px;
+      letter-spacing: -0.4px;
+    }
+
+    .feature-card p,
+    .problem-card p,
+    .benefit-card p {
+      color: var(--muted);
+    }
+
+    .dark-section {
+      background: var(--dark);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-section .section-heading p,
+    .dark-section .feature-card p {
+      color: #d8c4b2;
+    }
+
+    .dark-section .section-heading h2 {
+      color: white;
+    }
+
+    .dark-section .feature-card {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: none;
+    }
+
+    .dark-section .feature-card h3 {
+      color: #ffd99c;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .step {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 22px;
+      box-shadow: 0 12px 32px rgba(31, 19, 13, 0.06);
+    }
+
+    .step-number {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--dark);
+      color: white;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .step h3 {
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* PRICING */
+    .pricing-card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 42px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .pricing-card h3 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .pricing-card p {
+      color: var(--muted);
+    }
+
+    .price {
+      margin: 22px 0;
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -2px;
+      color: var(--coffee);
+    }
+
+    .price span {
+      font-size: 17px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .pricing-list {
+      text-align: left;
+      display: grid;
+      gap: 12px;
+      margin: 26px 0 32px;
+    }
+
+    .pricing-list div {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .pricing-list div::before {
+      content: "✓";
+      color: var(--coffee);
+      font-weight: 950;
+      margin-right: 10px;
+    }
+
+    /* CTA */
+    .cta-box {
+      background: linear-gradient(135deg, var(--dark), var(--brown));
+      color: white;
+      border-radius: 34px;
+      padding: 58px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(213, 155, 85, 0.18);
+      right: -90px;
+      top: -120px;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(32px, 4vw, 50px);
+      line-height: 1.1;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-box p {
+      color: #e4d1bf;
+      max-width: 660px;
+      margin: 0 auto 28px;
+      font-size: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-box .btn {
+      position: relative;
+      z-index: 1;
+    }
+
+    footer {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .footer-grid {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .footer-grid strong {
+      color: var(--dark);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .grid-3,
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 60px;
+      }
+
+      .mockup-card {
+        transform: none;
+      }
+
+      .floating-card {
+        position: static;
+        margin-top: 18px;
+        width: 100%;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-box {
+        padding: 42px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="#" class="brand">
+        <span class="brand-icon">☕</span>
+        BrewIQ
+      </a>
+
+      <nav class="nav-links">
+        <a href="#problem">Problem</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact" class="nav-cta">Request Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="badge">Smart POS built for coffee shops</div>
+          <h1>Run your café faster, clearer, and <span>smarter.</span></h1>
+          <p class="hero-text">
+            BrewIQ helps coffee shop owners process orders, track inventory, monitor sales,
+            and receive smart 30-day business recommendations from one easy-to-use platform.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Request a Demo</a>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
+          </div>
+
+          <div class="trust-row">
+            <span>POS billing</span>
+            <span>Inventory alerts</span>
+            <span>Sales analytics</span>
+          </div>
+        </div>
+
+        <div class="mockup-wrap">
+          <div class="mockup-card">
+            <div class="mockup-screen">
+              <div class="mockup-top">
+                <div class="screen-title">BrewIQ Dashboard</div>
+                <div class="dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metric-box">
+                  <small>Today's Sales</small>
+                  <strong>PHP 8,450</strong>
+                </div>
+                <div class="metric-box">
+                  <small>Best Seller</small>
+                  <strong>Iced Latte</strong>
+                </div>
+                <div class="metric-box">
+                  <small>Low Stock Alert</small>
+                  <strong>Milk</strong>
+                </div>
+                <div class="metric-box">
+                  <small>30-Day Growth</small>
+                  <strong>+18%</strong>
+                </div>
+              </div>
+
+              <div class="insight-card">
+                <h3>Smart Recommendation</h3>
+                <p>Increase milk stock before weekends. Iced drinks sell 24% higher every Friday to Sunday.</p>
+              </div>
+
+              <div class="bar-group">
+                <div>
+                  <div class="bar-label"><span>Iced Latte</span><span>82%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:82%"></div></div>
+                </div>
+                <div>
+                  <div class="bar-label"><span>Spanish Latte</span><span>68%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:68%"></div></div>
+                </div>
+                <div>
+                  <div class="bar-label"><span>Americano</span><span>45%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:45%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="floating-card">
+            <span>Estimated saved time</span>
+            <strong>3+ hrs/week</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">The Problem</div>
+          <h2>Manual café operations make growth harder.</h2>
+          <p>
+            Many coffee shops still rely on notebooks, calculators, spreadsheets, or basic cash registers,
+            causing delays, stock issues, and unclear business decisions.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="problem-card">
+            <div class="icon">⏱️</div>
+            <h3>Slow Transactions</h3>
+            <p>Manual order processing creates long queues, wrong totals, and slower customer service.</p>
+          </div>
+
+          <div class="problem-card">
+            <div class="icon">📦</div>
+            <h3>Stock Shortages</h3>
+            <p>Owners often notice missing ingredients too late, especially during busy hours.</p>
+          </div>
+
+          <div class="problem-card">
+            <div class="icon">📉</div>
+            <h3>Limited Insights</h3>
+            <p>Without clear reports, it is difficult to know which drinks are profitable or underperforming.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark-section" id="features">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Our Solution</div>
+          <h2>Everything your coffee shop needs in one platform.</h2>
+          <p>
+            BrewIQ combines POS, inventory, reporting, and smart recommendations into one simple system
+            built specifically for coffee shop owners.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="icon">🧾</div>
+            <h3>Smart POS Billing</h3>
+            <p>Process orders faster, calculate totals automatically, and reduce cashier mistakes.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Sales Dashboard</h3>
+            <p>Track daily, weekly, and monthly sales with clear reports for better decisions.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">🔔</div>
+            <h3>Low Stock Alerts</h3>
+            <p>Know when ingredients are running low before they affect your service.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">🧠</div>
+            <h3>30-Day Insights</h3>
+            <p>Analyze sales patterns and receive practical suggestions for growth and inventory planning.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">👥</div>
+            <h3>Staff Access Control</h3>
+            <p>Give owners and baristas the right access while protecting sensitive business data.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">☁️</div>
+            <h3>Offline + Cloud Backup</h3>
+            <p>Continue operations during weak internet connection and keep data safely backed up.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">How It Works</div>
+          <h2>Start using BrewIQ in four simple steps.</h2>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Create Account</h3>
+            <p>Register your coffee shop and set up your business profile.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Add Menu</h3>
+            <p>Input your drinks, prices, ingredients, and staff accounts.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Process Orders</h3>
+            <p>Use the POS daily to handle transactions and update inventory.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3>Review Insights</h3>
+            <p>View reports and recommendations to improve operations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Pricing</div>
+          <h2>Affordable for small and growing cafés.</h2>
+          <p>Simple monthly pricing with the core tools coffee shop owners need.</p>
+        </div>
+
+        <div class="pricing-card">
+          <h3>Starter Plan</h3>
+          <p>For independent coffee shops and small café teams.</p>
+          <div class="price">PHP 1,299 <span>/ month</span></div>
+
+          <div class="pricing-list">
+            <div>POS order management</div>
+            <div>Inventory tracking and alerts</div>
+            <div>Sales analytics dashboard</div>
+            <div>30-day smart recommendations</div>
+            <div>Owner and staff accounts</div>
+            <div>Basic setup support</div>
+          </div>
+
+          <a href="#contact" class="btn btn-primary">Start with BrewIQ</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Ready to grow your coffee shop smarter?</h2>
+          <p>
+            Request a demo today and see how BrewIQ can help reduce errors, prevent stock shortages,
+            and give you clearer business insights.
+          </p>
+          <a href="mailto:brewiq@gmail.com" class="btn btn-primary">Request a Demo</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div><strong>BrewIQ</strong> — Smart POS & Analytics for Coffee Shops</div>
+      <div>Email: brewiq@gmail.com | Phone: 09171234567</div>
+    </div>
+  </footer>
+</body>
+</html>
